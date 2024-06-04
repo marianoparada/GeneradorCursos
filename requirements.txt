@@ -1,0 +1,5 @@
+wheel
+g4f
+streamlit
+pandas
+python-docx
