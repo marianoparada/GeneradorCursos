@@ -15,8 +15,8 @@ def chatear(modelo, mensaje):
     client = Client()
     with st.spinner('Contactando a la AI ...'):
         response = client.chat.completions.create(
-            model=g4f.models.default,
-            provider=g4f.Provider.Bing,
+            model=gpt-3.5-turbo,
+            provider=g4f.Provider.default,
             messages=[{'role': 'user', 'content': mensaje}]
         )
         respuesta = response.choices[0].message.content
