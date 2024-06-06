@@ -34,6 +34,7 @@ def main():
     # Configurar la interfaz de Streamlit
     st.title('Generador de Cursos asistido por I.A')
     # Entrada de texto para el nombre del curso
+    idioma = st.selectbox("Selecciona el idioma", ["Español", "English","Portuguese","Italian","French"])
     modelo = st.selectbox("Selecciona el modelo de lenguaje", ["gpt-4-0613", "gpt-3.5-turbo","gpt-4o","gpt-4-turbo"])
     nombre = st.text_input("Escribe el nombre del curso:")
     # Entrada de texto para el público objetivo
@@ -46,7 +47,7 @@ def main():
         if nombre and publico and cant_modulos:
 
             texto = f'Nombre del curso: {nombre} - Público objetivo: {publico}'
-            metas = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear la descripción de un curso en base a: {texto} . Al final debes incluir los objetivos de aprendizaje.'
+            metas = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear la descripción de un curso en base a: {texto} . Al final debes incluir los objetivos de aprendizaje. Recuerda hacerlo en idioma {idioma}.'
 
             st.write('Espere ... contactando a ChatGPT')
             respuesta = chatear(modelo, metas)
@@ -61,7 +62,7 @@ def main():
 
             st.write(f'Guardando descripción de {nombre}')
             
-            arma_modulos = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear y enumerar {cant_modulos} módulos para impartir el curso: {texto}. Debes enumerar los mismos numéricamente así: 1)texto, 2)texto, etc. Solo quiero que me des los módulos sin generar descripciones y sin saltos de línea entre ellos.'
+            arma_modulos = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear y enumerar {cant_modulos} módulos para impartir el curso: {texto}. Debes enumerar los mismos numéricamente así: 1)texto, 2)texto, etc. Solo quiero que me des los módulos sin generar descripciones y sin saltos de línea entre ellos.Recuerda hacerlo en idioma {idioma}.'
             st.write('Espere. Contactando a ChatGPT para crear módulos ... ')
             respuesta = chatear(modelo, arma_modulos)
             st.write('Módulos finalizados ... ')
@@ -79,7 +80,7 @@ def main():
             
             # Agregar contenido para cada módulo
             for i in df_modulos.index:
-                arma_modulos = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear el contenido para el módulo {df_modulos.modulos[i]} del curso: {nombre}. Al final debes incluir fuentes con información complementaria bajo el título: Puedes encontrar más información en los siguientes links: '
+                arma_modulos = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear el contenido para el módulo {df_modulos.modulos[i]} del curso: {nombre}. Al final debes incluir fuentes con información complementaria bajo el título: Puedes encontrar más información en los siguientes links. Recuerda hacerlo en idioma {idioma}. '
                 st.write(f'Generando contenido para el módulo: {df_modulos.modulos[i]}')
                 respuesta = chatear(modelo, arma_modulos)
                 df_modulos.at[i, 'contenido'] = respuesta
@@ -92,9 +93,9 @@ def main():
             df_modulos['cuestionario'] = 'NaN'
 
             for i in df_modulos.index:
-                choice = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear un cuestionario multiple choice de 10 preguntas (indicando con una X la opción correcta) teniendo en cuenta el contenido y específicamente para el módulo {df_modulos.modulos[i]} del curso: {nombre}. El ejercicio es individual.'
-                simulacion = f'Actúa como un experto en elearning y pedagogía. Eres el docente de un curso virtual de {nombre} del módulo {df_modulos.modulos[i]} y tienes que realizar una actividad de simulación individual donde el alumno debe tomar un rol, evaluar una situación y poner en práctica lo aprendido. Debe incluir ejercicios que evalúen la toma de decisiones en situaciones particulares o preguntar con qué otros roles debería interactuar para poder cumplir la asignación. El ejercicio es individual.'
-                completar = f'Actúa como un experto en elearning y pedagogía. Eres el docente de un curso virtual de {nombre} del módulo {df_modulos.modulos[i]} y tienes que realizar una actividad de simulación individual donde el alumno debe tomar un rol, evaluar una situación y poner en práctica lo aprendido. Debe incluir ejercicios como completar una oración. El ejercicio es individual.'
+                choice = f'Actúa como un especialista en pedagogía y educación a distancia (elearning). Debes crear un cuestionario multiple choice de 10 preguntas (indicando con una X la opción correcta) teniendo en cuenta el contenido y específicamente para el módulo {df_modulos.modulos[i]} del curso: {nombre}. El ejercicio es individual.Recuerda hacerlo en idioma {idioma}.'
+                simulacion = f'Actúa como un experto en elearning y pedagogía. Eres el docente de un curso virtual de {nombre} del módulo {df_modulos.modulos[i]} y tienes que realizar una actividad de simulación individual donde el alumno debe tomar un rol, evaluar una situación y poner en práctica lo aprendido. Debe incluir ejercicios que evalúen la toma de decisiones en situaciones particulares o preguntar con qué otros roles debería interactuar para poder cumplir la asignación. El ejercicio es individual.Recuerda hacerlo en idioma {idioma}.'
+                completar = f'Actúa como un experto en elearning y pedagogía. Eres el docente de un curso virtual de {nombre} del módulo {df_modulos.modulos[i]} y tienes que realizar una actividad de simulación individual donde el alumno debe tomar un rol, evaluar una situación y poner en práctica lo aprendido. Debe incluir ejercicios como completar una oración. El ejercicio es individual.Recuerda hacerlo en idioma {idioma}.'
                 ejercicios = [choice, simulacion, completar]
                 ejercicio_random = random.choice(ejercicios)
                 
